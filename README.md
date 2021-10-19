@@ -16,11 +16,11 @@ git+https://github.com/dapqa/dapqa-recsys-utils.git@vx.x.x
 Example usage for Movielens 100k dataset (https://grouplens.org/datasets/movielens/100k/):
 
 ```python
-
 from drsu.config import DRSUConfiguration
 from drsu.datasets import download_and_transform_dataset, as_pandas, as_numpy, MOVIELENS_100K
 
 # Set a directory for storing downloaded data and a prepared dataset's CSV name
+# If the target directory does not exist, it will be created automatically
 # These values are default, so this part can be skipped
 DRSUConfiguration.local_dataset_dir = 'data'
 DRSUConfiguration.ratings_file_name = 'prepared-ratings.csv'
