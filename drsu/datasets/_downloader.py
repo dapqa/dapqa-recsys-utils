@@ -49,7 +49,8 @@ def download_and_transform_dataset(dataset_descriptor: DatasetDescriptor, verbos
     download_and_extract_zip(dataset_descriptor.url, make_dataset_path(dataset_descriptor), verbose=verbose)
 
     if os.path.exists(make_ratings_file_path(dataset_descriptor)):
-        print(f'Dataset is already tranformed, skipped')
+        if verbose:
+            print(f'Dataset is already tranformed, skipped')
     else:
         if dataset_descriptor.name == MOVIELENS_100K.name:
             _transform_movielens_100k()
