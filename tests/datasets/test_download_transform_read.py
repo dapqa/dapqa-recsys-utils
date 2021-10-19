@@ -23,13 +23,15 @@ def temp_dir_fixture():
 
 @pytest.fixture()
 def is_skipped_dataset_fixture(request):
-    skip_datasets = set()
-    try:
-        skip_datasets_str = request.config.getini("skip_datasets")
-        skip_datasets = set(ds_id.strip() for ds_id in skip_datasets_str.split(","))
-    except ValueError:
-        pass
+    skip_datasets_str = request.config.getoption("skip_datasets")
 
+    if skip_datasets_str is None:
+        try:
+            skip_datasets_str = request.config.getini("skip_datasets")
+        except ValueError:
+            skip_datasets_str = ""
+
+    skip_datasets = set(filter(lambda x: x, [ds_id.strip() for ds_id in skip_datasets_str.split(",")]))
     return lambda dataset_descriptor: dataset_descriptor.id in skip_datasets
 
 
