@@ -66,3 +66,17 @@ LIBRARY_THING = DatasetDescriptor(
     max_item_id=506165,
     rating_scale=(1, 5)
 )
+
+# Check https://sites.google.com/eng.ucsd.edu/ucsdbookgraph/reviews for citation
+GOODREADS_REVIEW_SPOILERS = DatasetDescriptor(
+    id='gr_s',
+    name='GoodRead Reviews (w/ spoilers)',
+    url='https://drive.google.com/uc?id=1NYV4F1WGJg6QbV0rOSXi6Y1gFLwic94a',
+    dir='goodreads-review-spoilers',
+    n_users=18868,
+    n_items=25469,
+    n_rows=1330981,
+    max_user_id=18868,
+    max_item_id=36328685,
+    rating_scale=(1, 5)
+)

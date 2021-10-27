@@ -3,6 +3,7 @@ import tarfile
 from io import BytesIO
 from urllib.request import urlopen
 from zipfile import ZipFile
+import gdown
 
 from drsu.config import DRSUConfiguration
 from drsu.datasets import DatasetDescriptor
@@ -45,3 +46,28 @@ def download_and_extract_tar(url, output_dir_name, verbose=True):
 
     if verbose:
         print(f'Tar file from {url} has been extracted to {output_dir_name}')
+
+
+def download_and_extract_from_google_drive(url, output_dir_name, verbose=True):
+    if os.path.exists(output_dir_name):
+        if verbose:
+            print(f'{output_dir_name} already exists, skipped')
+        return
+
+    if not os.path.exists(output_dir_name):
+        os.mkdir(output_dir_name)
+
+    previous_path = os.path.abspath('.')
+    os.chdir(output_dir_name)
+    try:
+        output_filename = gdown.download(url, quiet=not verbose, resume=True)
+        try:
+            gdown.extractall(output_filename, output_dir_name)
+        except ValueError:
+            if not output_filename.endswith('.json.gz'):
+                raise
+    finally:
+        os.chdir(previous_path)
+
+    if verbose:
+        print(f'File from {url} has been extracted to {output_dir_name}')
