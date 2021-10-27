@@ -1,4 +1,5 @@
 import os
+import tarfile
 from io import BytesIO
 from urllib.request import urlopen
 from zipfile import ZipFile
@@ -30,3 +31,21 @@ def download_and_extract_zip(url, output_dir_name, verbose=True):
 
     if verbose:
         print(f'Zip file from {url} has been extracted to {output_dir_name}')
+
+
+def download_and_extract_tar(url, output_dir_name, verbose=True):
+    if os.path.exists(output_dir_name):
+        if verbose:
+            print(f'{output_dir_name} already exists, skipped')
+        return
+
+    with urlopen(url) as tar_response:
+        with tarfile.open(fileobj=BytesIO(tar_response.read())) as tar_file:
+            tar_file.extractall(output_dir_name)
+
+    if verbose:
+        print(f'Tar file from {url} has been extracted to {output_dir_name}')
+
+
+if __name__ == '__main__':
+    download_and_extract_tar('http://deepyeti.ucsd.edu/jmcauley/datasets/epinions/epinions_data.tar.gz', 'kek')

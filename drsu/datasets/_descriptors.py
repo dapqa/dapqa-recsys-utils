@@ -35,3 +35,16 @@ MOVIELENS_10M = DatasetDescriptor(
     max_user_id=71567,
     max_item_id=65133
 )
+
+# Check https://cseweb.ucsd.edu/~jmcauley/datasets.html#multi_aspect for citation
+EPINIONS = DatasetDescriptor(
+    id='ep',
+    name='epinions',
+    url='http://deepyeti.ucsd.edu/jmcauley/datasets/epinions/epinions_data.tar.gz',
+    dir='epinions',
+    n_users=116260,
+    n_items=41269,
+    n_rows=188478,
+    max_user_id=116260,
+    max_item_id=41269
+)
