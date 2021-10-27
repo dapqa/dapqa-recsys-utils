@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Tuple
 
 
 @dataclass
@@ -13,3 +14,4 @@ class DatasetDescriptor:
     n_rows: int
     max_user_id: int
     max_item_id: int
+    rating_scale: Tuple[int, int]

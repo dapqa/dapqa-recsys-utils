@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import ast
 
-from . import MOVIELENS_100K, MOVIELENS_1M, MOVIELENS_10M, EPINIONS
+from . import MOVIELENS_100K, MOVIELENS_1M, MOVIELENS_10M, EPINIONS, LIBRARY_THING
 from ._descriptor_classes import DatasetDescriptor
 from ._utils import make_dataset_path, make_ratings_file_path, download_and_extract_zip, download_and_extract_tar
 
@@ -58,6 +58,24 @@ def _transform_epinions():
               index=None)
 
 
+def _transform_library_thing():
+    raw_data = []
+    with open(os.path.join(make_dataset_path(LIBRARY_THING), 'lthing_data', 'reviews.json')) as f:
+        for line in f:
+            raw_data.append(ast.literal_eval(line))
+
+    df = pd.DataFrame(raw_data)
+    df['user_id'] = df['user'].astype('category').cat.rename_categories(range(1, df['user'].nunique() + 1))
+    df['item_id'] = df['work'].astype('category').cat.rename_categories(range(1, df['work'].nunique() + 1))
+    df = df[['user_id', 'item_id', 'stars', 'unixtime']]
+    df.dropna(inplace=True)
+    df.rename(columns={'stars': 'rating', 'unixtime': 'timestamp'}, inplace=True)
+
+    df.to_csv(make_ratings_file_path(LIBRARY_THING),
+              sep=',',
+              index=None)
+
+
 def download_and_transform_dataset(dataset_descriptor: DatasetDescriptor, verbose=True):
     """Downloads a dataset by given descriptor.
     Next, transforms it into a CSV file that always contains columns 'user_id', 'item_id', 'rating'. Some additional columns may also
@@ -73,7 +91,7 @@ def download_and_transform_dataset(dataset_descriptor: DatasetDescriptor, verbos
 
     if os.path.exists(make_ratings_file_path(dataset_descriptor)):
         if verbose:
-            print(f'Dataset is already tranformed, skipped')
+            print(f'Dataset is already transformed, skipped')
     else:
         if dataset_descriptor.id == MOVIELENS_100K.id:
             _transform_movielens_100k()
@@ -83,7 +101,8 @@ def download_and_transform_dataset(dataset_descriptor: DatasetDescriptor, verbos
             _transform_movielens_10m()
         elif dataset_descriptor.id == EPINIONS.id:
             _transform_epinions()
+        elif dataset_descriptor.id == LIBRARY_THING.id:
+            _transform_library_thing()
 
     if verbose:
         print(f'Dataset "{dataset_descriptor.name}" is ready for use')
-

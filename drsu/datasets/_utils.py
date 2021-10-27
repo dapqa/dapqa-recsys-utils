@@ -45,7 +45,3 @@ def download_and_extract_tar(url, output_dir_name, verbose=True):
 
     if verbose:
         print(f'Tar file from {url} has been extracted to {output_dir_name}')
-
-
-if __name__ == '__main__':
-    download_and_extract_tar('http://deepyeti.ucsd.edu/jmcauley/datasets/epinions/epinions_data.tar.gz', 'kek')

@@ -9,7 +9,8 @@ MOVIELENS_100K = DatasetDescriptor(
     n_items=1682,
     n_rows=100000,
     max_user_id=943,
-    max_item_id=1682
+    max_item_id=1682,
+    rating_scale=(1, 5)
 )
 
 MOVIELENS_1M = DatasetDescriptor(
@@ -21,7 +22,8 @@ MOVIELENS_1M = DatasetDescriptor(
     n_items=3706,
     n_rows=1000209,
     max_user_id=6040,
-    max_item_id=3952
+    max_item_id=3952,
+    rating_scale=(1, 5)
 )
 
 MOVIELENS_10M = DatasetDescriptor(
@@ -33,7 +35,8 @@ MOVIELENS_10M = DatasetDescriptor(
     n_items=10677,
     n_rows=10000054,
     max_user_id=71567,
-    max_item_id=65133
+    max_item_id=65133,
+    rating_scale=(1, 5)
 )
 
 # Check https://cseweb.ucsd.edu/~jmcauley/datasets.html#multi_aspect for citation
@@ -46,5 +49,20 @@ EPINIONS = DatasetDescriptor(
     n_items=41269,
     n_rows=188478,
     max_user_id=116260,
-    max_item_id=41269
+    max_item_id=41269,
+    rating_scale=(1, 5)
+)
+
+# Check https://cseweb.ucsd.edu/~jmcauley/datasets.html#multi_aspect for citation
+LIBRARY_THING = DatasetDescriptor(
+    id='libt',
+    name='LibraryThing',
+    url='http://deepyeti.ucsd.edu/jmcauley/datasets/librarything/lthing_data.tar.gz',
+    dir='library-thing',
+    n_users=70618,
+    n_items=385251,
+    n_rows=1387125,
+    max_user_id=83194,
+    max_item_id=506165,
+    rating_scale=(1, 5)
 )
