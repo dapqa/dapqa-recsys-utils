@@ -1,5 +1,5 @@
 numpy == 1.20.3
 pandas == 1.2.3
-pytest
-gdown
-kaggle
+pytest == 6.2.5
+gdown == 4.2.0
+kaggle == 1.5.12
