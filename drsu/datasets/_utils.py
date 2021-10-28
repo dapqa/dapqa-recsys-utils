@@ -3,6 +3,7 @@ import tarfile
 from io import BytesIO
 from urllib.request import urlopen
 from zipfile import ZipFile
+
 import gdown
 
 from drsu.config import DRSUConfiguration
@@ -15,6 +16,22 @@ def make_dataset_path(dataset_descriptor: DatasetDescriptor) -> str:
 
 def make_ratings_file_path(dataset_descriptor: DatasetDescriptor) -> str:
     return os.path.join(make_dataset_path(dataset_descriptor), DRSUConfiguration.ratings_file_name)
+
+
+def download_unarchived(url, output_dir_name, verbose=True):
+    if os.path.exists(output_dir_name):
+        if verbose:
+            print(f'{output_dir_name} already exists, skipped')
+        return
+
+    file_name = url.split('/')[-1].split('?')[0]
+    os.mkdir(output_dir_name)
+    with urlopen(url) as response:
+        with open(os.path.join(output_dir_name, file_name), 'wb') as out:
+            out.write(response.read())
+
+    if verbose:
+        print(f'File from {url} has been downloaded to {output_dir_name}')
 
 
 def download_and_extract_zip(url, output_dir_name, verbose=True):

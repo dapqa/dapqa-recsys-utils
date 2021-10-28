@@ -9,7 +9,7 @@ import ast
 from . import MOVIELENS_100K, MOVIELENS_1M, MOVIELENS_10M, EPINIONS, LIBRARY_THING, GOODREADS_REVIEW_SPOILERS
 from ._descriptor_classes import DatasetDescriptor
 from ._utils import make_dataset_path, make_ratings_file_path, download_and_extract_zip, download_and_extract_tar, \
-    download_and_extract_from_google_drive
+    download_and_extract_from_google_drive, download_unarchived
 
 
 def _transform_movielens_100k():
@@ -108,6 +108,24 @@ def _transform_goodreads_reviews_spoliers():
               index=None)
 
 
+def _transform_amazon_ratings(dataset_descriptor: DatasetDescriptor):
+    output_dir_name = make_dataset_path(dataset_descriptor)
+    output_file_name = make_ratings_file_path(dataset_descriptor)
+
+    files = [f for f in os.listdir(output_dir_name) if f.endswith('.csv') and not output_file_name.endswith(f)]
+    if len(files) != 1:
+        raise FileNotFoundError('Could not determine raw ratings file name')
+
+    df = pd.read_csv(os.path.join(output_dir_name, files[0]), names=['user_code', 'item_code', 'rating', 'timestamp'])
+    df['user_id'] = df['user_code'].astype('category').cat.rename_categories(range(1, df['user_code'].nunique() + 1))
+    df['item_id'] = df['item_code'].astype('category').cat.rename_categories(range(1, df['item_code'].nunique() + 1))
+    df = df[['user_id', 'item_id', 'rating', 'timestamp']]
+
+    df.to_csv(output_file_name,
+              sep=',',
+              index=None)
+
+
 def download_and_transform_dataset(dataset_descriptor: DatasetDescriptor, verbose=True):
     """Downloads a dataset by given descriptor.
     Next, transforms it into a CSV file that always contains columns 'user_id', 'item_id', 'rating'. Some additional columns may also
@@ -122,7 +140,7 @@ def download_and_transform_dataset(dataset_descriptor: DatasetDescriptor, verbos
     elif dataset_descriptor.url.startswith('https://drive.google.com'):
         download_and_extract_f = download_and_extract_from_google_drive
     else:
-        raise ValueError(f'Unknown archive format at url {dataset_descriptor.url}')
+        download_and_extract_f = download_unarchived
 
     download_and_extract_f(dataset_descriptor.url, make_dataset_path(dataset_descriptor), verbose=verbose)
 
@@ -142,6 +160,8 @@ def download_and_transform_dataset(dataset_descriptor: DatasetDescriptor, verbos
             _transform_library_thing()
         elif dataset_descriptor.id == GOODREADS_REVIEW_SPOILERS.id:
             _transform_goodreads_reviews_spoliers()
+        elif dataset_descriptor.id.startswith('amz_'):
+            _transform_amazon_ratings(dataset_descriptor)
 
     if verbose:
         print(f'Dataset "{dataset_descriptor.name}" is ready for use')
