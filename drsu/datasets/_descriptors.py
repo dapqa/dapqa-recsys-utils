@@ -81,6 +81,19 @@ GOODREADS_REVIEW_SPOILERS = DatasetDescriptor(
     rating_scale=(1, 5)
 )
 
+DRUG_RECOMMENDATIONS = DatasetDescriptor(
+    id='drug_rec',
+    name='Drug Recommendations',
+    url='https://www.kaggle.com/subhajournal/drug-recommendations',
+    dir='drug-recommendations',
+    n_users=708,
+    n_items=2637,
+    n_rows=53766,
+    max_user_id=708,
+    max_item_id=2637,
+    rating_scale=(1, 10)
+)
+
 AMAZON_RATINGS_SOFTWARE = DatasetDescriptor(
     id='amz_software',
     name='Amazon Ratings (Software)',

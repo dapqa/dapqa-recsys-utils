@@ -5,6 +5,7 @@ from urllib.request import urlopen
 from zipfile import ZipFile
 
 import gdown
+import kaggle
 
 from drsu.config import DRSUConfiguration
 from drsu.datasets import DatasetDescriptor
@@ -88,3 +89,18 @@ def download_and_extract_from_google_drive(url, output_dir_name, verbose=True):
 
     if verbose:
         print(f'File from {url} has been extracted to {output_dir_name}')
+
+
+def download_and_extract_from_kaggle(url, output_dir_name, verbose=True):
+    if os.path.exists(output_dir_name):
+        if verbose:
+            print(f'{output_dir_name} already exists, skipped')
+        return
+
+    dataset_name = url.replace('https://www.kaggle.com/', '')
+
+    kaggle.api.authenticate()
+    kaggle.api.dataset_download_files(dataset_name, path=output_dir_name, unzip=True)
+
+    if verbose:
+        print(f'Tar file from {url} has been extracted to {output_dir_name}')

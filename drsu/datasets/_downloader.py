@@ -6,10 +6,11 @@ import os
 import pandas as pd
 import ast
 
-from . import MOVIELENS_100K, MOVIELENS_1M, MOVIELENS_10M, EPINIONS, LIBRARY_THING, GOODREADS_REVIEW_SPOILERS
+from . import MOVIELENS_100K, MOVIELENS_1M, MOVIELENS_10M, EPINIONS, LIBRARY_THING, GOODREADS_REVIEW_SPOILERS, \
+    DRUG_RECOMMENDATIONS
 from ._descriptor_classes import DatasetDescriptor
 from ._utils import make_dataset_path, make_ratings_file_path, download_and_extract_zip, download_and_extract_tar, \
-    download_and_extract_from_google_drive, download_unarchived
+    download_and_extract_from_google_drive, download_unarchived, download_and_extract_from_kaggle
 
 
 def _transform_movielens_100k():
@@ -108,6 +109,21 @@ def _transform_goodreads_reviews_spoliers():
               index=None)
 
 
+def _transform_drug_recommendations():
+    df = pd.read_csv(os.path.join(make_dataset_path(DRUG_RECOMMENDATIONS), 'Drug_Data.csv'))
+
+    df['timestamp'] = df['Date'].map(lambda d: datetime.datetime.strptime(d, '%d-%b-%y').timestamp())
+    df['user_id'] = df['Prescribed_for'].astype('category').cat.rename_categories(
+        range(1, df['Prescribed_for'].nunique() + 1))
+    df['item_id'] = df['drugName'].astype('category').cat.rename_categories(range(1, df['drugName'].nunique() + 1))
+    df.rename(columns={'User_Rating': 'rating'}, inplace=True)
+    df = df[['user_id', 'item_id', 'rating', 'timestamp']]
+
+    df.to_csv(make_ratings_file_path(DRUG_RECOMMENDATIONS),
+              sep=',',
+              index=None)
+
+
 def _transform_amazon_ratings(dataset_descriptor: DatasetDescriptor):
     output_dir_name = make_dataset_path(dataset_descriptor)
     output_file_name = make_ratings_file_path(dataset_descriptor)
@@ -139,6 +155,8 @@ def download_and_transform_dataset(dataset_descriptor: DatasetDescriptor, verbos
         download_and_extract_f = download_and_extract_tar
     elif dataset_descriptor.url.startswith('https://drive.google.com'):
         download_and_extract_f = download_and_extract_from_google_drive
+    elif dataset_descriptor.url.startswith('https://www.kaggle.com/'):
+        download_and_extract_f = download_and_extract_from_kaggle
     else:
         download_and_extract_f = download_unarchived
 
@@ -160,6 +178,8 @@ def download_and_transform_dataset(dataset_descriptor: DatasetDescriptor, verbos
             _transform_library_thing()
         elif dataset_descriptor.id == GOODREADS_REVIEW_SPOILERS.id:
             _transform_goodreads_reviews_spoliers()
+        elif dataset_descriptor.id == DRUG_RECOMMENDATIONS.id:
+            _transform_drug_recommendations()
         elif dataset_descriptor.id.startswith('amz_'):
             _transform_amazon_ratings(dataset_descriptor)
 
