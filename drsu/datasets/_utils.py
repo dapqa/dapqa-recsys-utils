@@ -103,4 +103,4 @@ def download_and_extract_from_kaggle(url, output_dir_name, verbose=True):
     kaggle.api.dataset_download_files(dataset_name, path=output_dir_name, unzip=True)
 
     if verbose:
-        print(f'Tar file from {url} has been extracted to {output_dir_name}')
+        print(f'File from {url} has been extracted to {output_dir_name}')

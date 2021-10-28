@@ -116,6 +116,8 @@ def _transform_drug_recommendations():
     df['user_id'] = df['Prescribed_for'].astype('category').cat.rename_categories(
         range(1, df['Prescribed_for'].nunique() + 1))
     df['item_id'] = df['drugName'].astype('category').cat.rename_categories(range(1, df['drugName'].nunique() + 1))
+
+    df.dropna(inplace=True)
     df.rename(columns={'User_Rating': 'rating'}, inplace=True)
     df = df[['user_id', 'item_id', 'rating', 'timestamp']]
 
