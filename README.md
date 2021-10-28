@@ -37,3 +37,13 @@ data_arr = as_numpy(MOVIELENS_100K)
 data_df_all = as_pandas(MOVIELENS_100K, only_ratings=False)
 data_arr_all = as_numpy(MOVIELENS_100K, only_ratings=False)
 ```
+
+### Datasets from Kaggle note
+To download datasets from Kaggle (such as `DRUG_RECOMMENDATIONS` one), 
+you need to specify your Kaggle username and API token.  
+The simplest way to do this is to add them into environment variables:
+
+```python
+os.environ['KAGGLE_USERNAME'] = 'username'
+os.environ['KAGGLE_KEY'] = 'key'
+```
